@@ -107,7 +107,10 @@ in {
             json = true;
             requisites = scanRequisites;
             no-requisites = !scanRequisites;
-            whitelist = map (whitelistFormat.generate "vulnix-whitelist.toml") whitelists;
+            whitelist = map (lib.flip lib.pipe [
+              (whitelistFormat.generate "vulnix-whitelist.toml")
+              (drv: "${drv}")
+            ]) whitelists;
           })} \
             --cache-dir $CACHE_DIRECTORY \
             ${lib.concatStringsSep " " cfg.extraOpts} "$@" \
